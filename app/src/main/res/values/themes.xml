@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="Base.Theme.FasterFinger" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Color attributes -->
+        <item name="android:windowBackground">@color/dark_background</item>
+        <item name="colorAccent">@color/accent_blue</item>
+        <item name="android:textColor">@color/text_primary</item>
+
+        <!-- Material components theme attributes -->
+        <item name="materialButtonStyle">@style/Widget.FasterFinger.Button</item>
+        <item name="android:textViewStyle">@style/Widget.FasterFinger.TextView</item>
+        <item name="radioButtonStyle">@style/Widget.FasterFinger.RadioButton</item>
+        <item name="editTextStyle">@style/Widget.FasterFinger.EditText</item>
+        <item name="android:editTextStyle">@style/Widget.FasterFinger.EditText</item>
+        <item name="shapeAppearanceSmallComponent">@style/ShapeAppearance.FasterFinger.SmallComponent</item>
+        <item name="shapeAppearanceMediumComponent">@style/ShapeAppearance.FasterFinger.MediumComponent</item>
+        <item name="shapeAppearanceLargeComponent">@style/ShapeAppearance.FasterFinger.LargeComponent</item>
+    </style>
+
+    <style name="Theme.FasterFinger" parent="Base.Theme.FasterFinger" />
+</resources>

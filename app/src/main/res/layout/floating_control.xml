@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.example.fasterfinger.DraggableImageView
+        android:id="@+id/crosshair"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:layout_gravity="center"
+        android:src="@drawable/ic_crosshair"
+        android:contentDescription="@string/crosshair_description"
+        android:theme="@style/Theme.MaterialComponents.DayNight"/>
+
+    <LinearLayout
+        android:id="@+id/controlPanel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/control_panel_background"
+        android:orientation="horizontal"
+        android:padding="8dp">
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/pauseButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_play"
+            app:shapeAppearance="@style/ShapeAppearance.MaterialComponents.SmallComponent"
+            android:contentDescription="@string/pause_button_description"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/settingsButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="8dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_settings"
+            app:shapeAppearance="@style/ShapeAppearance.MaterialComponents.SmallComponent"
+            android:contentDescription="@string/settings_button_description"/>
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/stopButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_stop"
+            app:shapeAppearance="@style/ShapeAppearance.MaterialComponents.SmallComponent"
+            android:contentDescription="@string/stop_button_description"/>
+    </LinearLayout>
+</merge>
