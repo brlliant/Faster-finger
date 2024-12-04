@@ -1,10 +1,9 @@
 package com.example.fasterfinger;
 
 import android.content.Context;
-import android.os.Build;
-import android.app.Service;
 import android.content.Intent;
 import android.graphics.PixelFormat;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
@@ -15,6 +14,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
+import android.app.Service;
 
 public class TapService extends Service {
     private WindowManager windowManager;
@@ -22,28 +22,35 @@ public class TapService extends Service {
     private AutoTapper autoTapper;
     private boolean isRunning = false;
     private Context materialContext;
+    private long savedInterval = 1000; // Default interval
     private static final String TAG = "TapService";
 
     @Override
     public void onCreate() {
         super.onCreate();
         // Ensure service context uses the correct theme
-        Context materialContext = new ContextThemeWrapper(this, R.style.Theme_FasterFinger);
+        materialContext = new ContextThemeWrapper(this, R.style.Theme_FasterFinger);
         windowManager = (WindowManager) getSystemService(WINDOW_SERVICE);
-        autoTapper = new AutoTapper(); // Updated constructor call
-        // Store materialContext to use later
-        this.materialContext = materialContext;
+        autoTapper = new AutoTapper();
     }
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         if (intent != null && !isRunning) {
-            long interval = intent.getLongExtra("interval", 1000);
-            Log.d(TAG, "Starting service with interval: " + interval + "ms");
-            showToast("Auto-tapper started");
+            // Save interval for later use
+            savedInterval = intent.getLongExtra("interval", 1000);
+            boolean initialStart = intent.getBooleanExtra("initialStart", false);
+
+            Log.d(TAG, "Starting service with interval: " + savedInterval + "ms");
 
             initializeFloatingControl();
-            autoTapper.setInterval(interval);
+            autoTapper.setInterval(savedInterval);
+
+            // Only show floating control, do not start auto-tapping
+            if (!initialStart) {
+                showToast("Floating control activated");
+            }
+
             isRunning = true;
         }
         return START_STICKY;
@@ -67,6 +74,8 @@ public class TapService extends Service {
         params.gravity = Gravity.TOP | Gravity.START;
 
         floatingControl = new FloatingControlView(materialContext);
+        floatingControl.setAutoTapper(autoTapper);
+        floatingControl.setInitialTapPosition((int)(savedInterval / 2), (int)(savedInterval / 2));
 
         floatingControl.setOnControlListener(new FloatingControlView.OnControlListener() {
             @Override
@@ -78,9 +87,10 @@ public class TapService extends Service {
 
             @Override
             public void onResume() {
-                autoTapper.resumeTapping();
-                showToast("Auto-tapper resumed");
-                Log.d(TAG, "Auto-tapper resumed");
+                // Start auto-tapping when resume is clicked
+                autoTapper.startTapping();
+                showToast("Auto-tapper started");
+                Log.d(TAG, "Auto-tapper started");
             }
 
             @Override
