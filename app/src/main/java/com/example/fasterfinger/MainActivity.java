@@ -13,7 +13,8 @@ import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.appcompat.app.AppCompatActivity;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity
+{
     private boolean isServiceRunning = false;
     private Button startButton;
     private EditText intervalInput;
@@ -111,20 +112,25 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean validateInput() {
+    private boolean validateInput()
+    {
         String intervalText = intervalInput.getText().toString();
-        if (intervalText.isEmpty()) {
+        if (intervalText.isEmpty())
+        {
             intervalInput.setError(getString(R.string.interval_empty_error));
             return false;
         }
 
         try {
             int interval = Integer.parseInt(intervalText);
-            if (interval < 50) {
+            if (interval < 50)
+            {
                 intervalInput.setError("Interval must be at least 50ms");
                 return false;
             }
-        } catch (NumberFormatException e) {
+        }
+        catch (NumberFormatException e)
+        {
             intervalInput.setError(getString(R.string.interval_invalid_error));
             return false;
         }
@@ -132,14 +138,17 @@ public class MainActivity extends AppCompatActivity {
         return true;
     }
 
-    private void startTapService() {
+    private void startTapService()
+    {
         Intent intent = new Intent(this, TapService.class);
         intent.putExtra("interval", calculateInterval());
         intent.putExtra("singlePoint", modeGroup.getCheckedRadioButtonId() == R.id.singlePointMode);
+        intent.putExtra("initialStart", false);  // Adding a flag to indicate initial start
         startService(intent);
     }
 
-    private void stopTapService() {
+    private void stopTapService()
+    {
         stopService(new Intent(this, TapService.class));
     }
 

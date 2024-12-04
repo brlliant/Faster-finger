@@ -3,7 +3,6 @@ package com.example.fasterfinger;
 import android.content.Context;
 import android.view.ContextThemeWrapper;
 import android.view.MotionEvent;
-import android.view.WindowManager;
 import android.widget.FrameLayout;
 import android.util.Log;
 import com.google.android.material.imageview.ShapeableImageView;
@@ -18,6 +17,7 @@ public class FloatingControlView extends FrameLayout {
     private boolean isPaused = true;
     private float dX, dY;
     private float lastTouchX, lastTouchY;
+    private AutoTapper autoTapper;
 
     public interface OnControlListener {
         void onPause();
@@ -66,9 +66,10 @@ public class FloatingControlView extends FrameLayout {
 
     private void setupListeners() {
         crosshairView.setOnTouchListener((v, event) -> {
-            WindowManager windowManager = (WindowManager) getContext().getSystemService(Context.WINDOW_SERVICE);
-            android.graphics.Point size = new android.graphics.Point();
-            windowManager.getDefaultDisplay().getSize(size);
+            // Retrieve the parent layout's size dynamically
+            FrameLayout parentLayout = (FrameLayout) v.getParent();
+            int parentWidth = parentLayout.getWidth();
+            int parentHeight = parentLayout.getHeight();
 
             switch (event.getAction()) {
                 case MotionEvent.ACTION_DOWN:
@@ -82,9 +83,9 @@ public class FloatingControlView extends FrameLayout {
                     float newX = event.getRawX() + dX;
                     float newY = event.getRawY() + dY;
 
-                    // Boundary checks
-                    newX = Math.max(0, Math.min(newX, size.x - v.getWidth()));
-                    newY = Math.max(0, Math.min(newY, size.y - v.getHeight()));
+                    // Adjust for parent boundaries
+                    newX = Math.max(0, Math.min(newX, parentWidth - v.getWidth()));
+                    newY = Math.max(0, Math.min(newY, parentHeight - v.getHeight()));
 
                     v.setX(newX);
                     v.setY(newY);
@@ -107,17 +108,18 @@ public class FloatingControlView extends FrameLayout {
             return true;
         });
 
+
+
         pauseButton.setOnClickListener(v -> {
             if (listener != null) {
                 if (isPaused) {
                     listener.onResume();
-                    Log.d(TAG, "Resume clicked");
                 } else {
                     listener.onPause();
-                    Log.d(TAG, "Pause clicked");
                 }
                 isPaused = !isPaused;
                 updatePauseButtonState();
+                Log.d(TAG, isPaused ? "Paused" : "Resumed");
             }
         });
 
@@ -138,5 +140,22 @@ public class FloatingControlView extends FrameLayout {
 
     public void setOnControlListener(OnControlListener listener) {
         this.listener = listener;
+    }
+
+    public void setAutoTapper(AutoTapper autoTapper) {
+        this.autoTapper = autoTapper;
+    }
+
+    public void setInitialTapPosition(int x, int y) {
+        // Ensure width and height are retrieved after layout
+        post(() -> {
+            float centerX = x - crosshairView.getWidth() / 2f;
+            float centerY = y - crosshairView.getHeight() / 2f;
+            crosshairView.setX(centerX);
+            crosshairView.setY(centerY);
+            if (autoTapper != null) {
+                autoTapper.updateTapPoint(x, y);
+            }
+        });
     }
 }
